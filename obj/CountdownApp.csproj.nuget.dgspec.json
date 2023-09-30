@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj": {}
+    "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj": {}
   },
   "projects": {
-    "c:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj": {
+    "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj",
+        "projectUniqueName": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj",
         "projectName": "CountdownApp",
-        "projectPath": "c:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj",
+        "projectPath": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj",
         "packagesPath": "C:\\Users\\crazy\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\obj\\",
+        "outputPath": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\crazy\\AppData\\Roaming\\NuGet\\NuGet.Config"
