@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Collections.Generic;
 
-
-
 // TO DO
 // HANDLE MULTIPLE COUNTDOWNS BETTER ( LET WRITE TO DIFFERENT FILES BASED ON USERS CHOICE )
-// ADD SETTINGS TO SET VARIABLES AND PICK PREFERENCES
+
 
 class Countdown
 {   
@@ -15,48 +14,46 @@ class Countdown
     private static Dictionary<string, CancellationTokenSource> countdowns = new Dictionary<string, CancellationTokenSource>();
     private static Dictionary<string, string> countdownNamesToIds = new Dictionary<string, string>();
     private static object lockObject = new object();
-    private static string countdownText = "Time remaining";
-    private static string countdownOverText = "Live Stream Will Begin Shortly";
-    private static string filePath = "./countdown_log.txt";
+    private static AppSettings countdownSettings = SettingsManager.GetCountdownSettings();
+    private static string paddedCountdownOverText;
 
-
-
-    static void Main(string[] args)
+    public static void SetSettings(string[] inputParts)
     {
+        string setting = inputParts[1];
+        string newSetting = string.Join(" ", inputParts.Skip(2));
 
-        while (true)
+        Console.WriteLine("selected setting:" + setting);
+
+        switch (setting)
         {
-            Console.WriteLine("Enter a command (start, stop, show, exit): ");
-            string userInput = Console.ReadLine();
-
-            string[] inputParts = userInput.Split(' ');
-
-            string command = inputParts[0].ToLower();
-
-            switch (command)
-            {
-                case "start-countdown":
-                    StartCountdown(inputParts);
-                    break;
-                case "stop":
-                    StopCountdown(inputParts[1]);
-                    break;
-                case "show":
-                    ShowAllCountdowns();
-                    break;
-                case "exit":
-                    return;
-                default:
-                    Console.WriteLine("Invalid command. Please enter start, stop, show, exit");
-                    break;
-            }
+            case "countdown-text":
+                SettingsManager.SetCountdownText(newSetting);
+                Console.WriteLine("set the countdown text message: " + SettingsManager.GetCountdownText());
+                break;
+            case "countdown-over-text":
+                SettingsManager.SetCountdownOverText(newSetting);
+                Console.WriteLine("set the text for when the countdown is over: " + SettingsManager.GetCountdownOverText());
+                break;
+            case "file-path":
+                SettingsManager.SetFilePath(newSetting);
+                Console.WriteLine("set the filepath: " + SettingsManager.GetFilePath());
+                break;
+            default:
+                Console.WriteLine("Invalid parameter. Please enter countdown-text, countdown-over-text, file-path");
+                break;
         }
+
+        SettingsManager.SaveSettings();
 
     }
 
-    static void StartCountdown(string[] inputParts)
+    public static void ReloadSettings()
     {
-        
+        countdownSettings = SettingsManager.GetCountdownSettings();
+    }
+
+    public static void StartCountdown(string[] inputParts)
+    { 
         string dateStr = inputParts[1];
         string timeStr = inputParts[2];
 
@@ -84,27 +81,36 @@ class Countdown
             Console.WriteLine($"Countdown started with name: {countdownName}");
     }
 
-    static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName)
+    public static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName)
     {
-        StreamWriter writer = new StreamWriter(filePath);
 
+        StreamWriter writer = new StreamWriter(countdownSettings.FilePath);
+
+        string prevCountdownText = string.Empty;
+        string prevCountDownOverText = string.Empty;
 
         while (!cancellationToken.IsCancellationRequested && DateTime.Now < targetDateTime)
         {
             TimeSpan timeRemaining = targetDateTime - DateTime.Now;
-            
             string formattedTime = timeRemaining.ToString("mm\\:ss");
+            string paddedCountdownText = $"{countdownSettings.CountdownText}: {formattedTime}".PadRight(prevCountdownText.Length);
+            paddedCountdownOverText = $"{countdownSettings.CountdownOverText}".PadRight(prevCountDownOverText.Length);
+
 
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
-            writer.Write($"{countdownText}: {formattedTime}");
+            writer.Write(paddedCountdownText);
             writer.Flush();
+
+            prevCountdownText = paddedCountdownText;
+            prevCountDownOverText = paddedCountdownOverText;
+
             Thread.Sleep(1000);
         }
 
         if (!cancellationToken.IsCancellationRequested)
         {
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
-            writer.Write($"\r{countdownOverText}");
+            writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
             Console.WriteLine($"Countdown {countdownName} finished!");
             StopCountdown(countdownName);
@@ -113,7 +119,7 @@ class Countdown
         else
         {   
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
-            writer.Write($"\r{countdownOverText}");
+            writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
             Console.WriteLine($"Countdown {countdownName} canceled");
             writer.Close();
@@ -121,7 +127,7 @@ class Countdown
     }
 
     
-    static void StopCountdown(string countdownName)
+    public static void StopCountdown(string countdownName)
     {
         lock (lockObject)
         {
@@ -139,7 +145,7 @@ class Countdown
         }
     }
 
-    static void ShowAllCountdowns()
+    public static void ShowAllCountdowns()
     {
         lock (lockObject)
         {
@@ -150,5 +156,5 @@ class Countdown
         }
     }
 
-
 }
+
