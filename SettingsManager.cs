@@ -7,6 +7,10 @@ class SettingsManager
     public static string countdownText;
     public static string countdownOverText;
     public static string filePath;
+    public static Boolean autoStartCountdown;
+    public static DateTime autoCountdownDateTime;
+    public static DayOfWeek autoCountdownDay;
+    public static string autoCountdownTime;
 
     public static void LoadSettings()
     {
@@ -20,6 +24,11 @@ class SettingsManager
                 countdownText = settings.CountdownText;
                 countdownOverText = settings.CountdownOverText;
                 filePath = settings.FilePath;
+                autoStartCountdown = settings.AutoStartCountdown;
+                autoCountdownDateTime = settings.AutoCountdownDateTime;
+                autoCountdownDay = settings.AutoCountdownDay;
+                autoCountdownTime = settings.AutoCountdownTime;
+
             }
             else
             {
@@ -39,7 +48,12 @@ class SettingsManager
         {
             CountdownText = countdownText,
             CountdownOverText = countdownOverText,
-            FilePath = filePath
+            FilePath = filePath,
+            AutoStartCountdown = autoStartCountdown,
+            AutoCountdownDateTime = autoCountdownDateTime,
+            AutoCountdownDay = autoCountdownDay,
+            AutoCountdownTime = autoCountdownTime,
+
         };
 
         string settingsJson = JsonSerializer.Serialize(settings);
@@ -54,6 +68,10 @@ class SettingsManager
             CountdownText = countdownText,
             CountdownOverText = countdownOverText,
             FilePath = filePath,
+            AutoStartCountdown = autoStartCountdown,
+            AutoCountdownDateTime = autoCountdownDateTime,
+            AutoCountdownDay = autoCountdownDay,
+            AutoCountdownTime = autoCountdownTime,
         };
 
     }
@@ -73,6 +91,25 @@ class SettingsManager
         return filePath;
     }
 
+    public static Boolean GetAutoStartCountdown()
+    {
+        return autoStartCountdown;
+    }
+
+    public static DateTime GetAutoCountdownDateTime()
+    {
+        return autoCountdownDateTime;
+    }
+
+    public static DayOfWeek GetAutoCountdownDay()
+    {
+        return autoCountdownDay;
+    }
+
+    public static string GetAutoCountdownTime()
+    {
+        return autoCountdownTime;
+    }
     public static void SetCountdownText(string newText)
     {
         countdownText = newText;
@@ -88,5 +125,26 @@ class SettingsManager
         filePath = newFilePath;
     }
 
+    public static void SetAutoStartCountdown(Boolean newValue)
+    {
+        autoStartCountdown = newValue;
+        SaveSettings();
+    }
 
+    public static void SetAutoCountdownDateTime(DateTime newAutoCountdownDateTime)
+    {
+        autoCountdownDateTime = newAutoCountdownDateTime;
+
+        SaveSettings();
+    }
+
+    public static void SetAutoCountdownDay(DayOfWeek newAutoCountdownDay)
+    {
+        autoCountdownDay = newAutoCountdownDay;
+    }
+
+    public static void SetAutoCountdownTime(string newAutoCountdownTime)
+    {
+        autoCountdownTime = newAutoCountdownTime;
+    }
 }

@@ -3,6 +3,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Collections.Generic;
+using System.Globalization; // Add this using statement
+
 
 // TO DO
 // HANDLE MULTIPLE COUNTDOWNS BETTER ( LET WRITE TO DIFFERENT FILES BASED ON USERS CHOICE )
@@ -17,54 +19,16 @@ class Countdown
     private static AppSettings countdownSettings = SettingsManager.GetCountdownSettings();
     private static string paddedCountdownOverText;
 
-    public static void SetSettings(string[] inputParts)
-    {
-        string setting = inputParts[1];
-        string newSetting = string.Join(" ", inputParts.Skip(2));
-
-        Console.WriteLine("selected setting:" + setting);
-
-        switch (setting)
-        {
-            case "countdown-text":
-                SettingsManager.SetCountdownText(newSetting);
-                Console.WriteLine("set the countdown text message: " + SettingsManager.GetCountdownText());
-                break;
-            case "countdown-over-text":
-                SettingsManager.SetCountdownOverText(newSetting);
-                Console.WriteLine("set the text for when the countdown is over: " + SettingsManager.GetCountdownOverText());
-                break;
-            case "file-path":
-                SettingsManager.SetFilePath(newSetting);
-                Console.WriteLine("set the filepath: " + SettingsManager.GetFilePath());
-                break;
-            default:
-                Console.WriteLine("Invalid parameter. Please enter countdown-text, countdown-over-text, file-path");
-                break;
-        }
-
-        SettingsManager.SaveSettings();
-
-    }
 
     public static void ReloadSettings()
     {
         countdownSettings = SettingsManager.GetCountdownSettings();
     }
 
-    public static void StartCountdown(string[] inputParts)
+    public static void StartCountdown(DateTime selectedDateTime)
     { 
-        string dateStr = inputParts[1];
-        string timeStr = inputParts[2];
 
-
-
-        if (!DateTime.TryParseExact(dateStr + " " + timeStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime selectedDateTime))
-            {
-                Console.WriteLine("Error on line 62Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
-                return;
-            }
-
+            Console.WriteLine("Started with time of: " + selectedDateTime);
             string countdownName = $"countdown{countdownNamesToIds.Count + 1}";
             string countdownId = Guid.NewGuid().ToString();
 
@@ -126,7 +90,6 @@ class Countdown
         }
     }
 
-    
     public static void StopCountdown(string countdownName)
     {
         lock (lockObject)
