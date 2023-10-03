@@ -6,6 +6,7 @@ class SettingsManager
     public static string jsonFilePath = "./settings.json";
     public static string countdownText;
     public static string countdownOverText;
+    public static string countdownFormat;
     public static string filePath;
     public static Boolean autoStartCountdown;
     public static DateTime autoCountdownDateTime;
@@ -23,6 +24,7 @@ class SettingsManager
             {
                 countdownText = settings.CountdownText;
                 countdownOverText = settings.CountdownOverText;
+                countdownFormat = settings.CountdownFormat;
                 filePath = settings.FilePath;
                 autoStartCountdown = settings.AutoStartCountdown;
                 autoCountdownDateTime = settings.AutoCountdownDateTime;
@@ -38,8 +40,6 @@ class SettingsManager
         {
             Console.WriteLine("File not found");
         }
-
-        Countdown.ReloadSettings();
     }
 
     public static void SaveSettings()
@@ -48,6 +48,7 @@ class SettingsManager
         {
             CountdownText = countdownText,
             CountdownOverText = countdownOverText,
+            CountdownFormat = countdownFormat,
             FilePath = filePath,
             AutoStartCountdown = autoStartCountdown,
             AutoCountdownDateTime = autoCountdownDateTime,
@@ -67,6 +68,7 @@ class SettingsManager
         return new AppSettings{
             CountdownText = countdownText,
             CountdownOverText = countdownOverText,
+            CountdownFormat = countdownFormat,
             FilePath = filePath,
             AutoStartCountdown = autoStartCountdown,
             AutoCountdownDateTime = autoCountdownDateTime,
@@ -86,6 +88,10 @@ class SettingsManager
         return countdownOverText;
     }
 
+    public static string GetCountdownFormat()
+    {
+        return countdownFormat;
+    }
     public static string GetFilePath()
     {
         return filePath;
@@ -120,6 +126,10 @@ class SettingsManager
         countdownOverText = newText;
     }
 
+    public static void SetCountdownFormat(string newFormat)
+    {
+        countdownFormat = newFormat;
+    }
     public static void SetFilePath(string newFilePath)
     {
         filePath = newFilePath;

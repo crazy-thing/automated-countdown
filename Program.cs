@@ -2,11 +2,10 @@ using System;
 
 // ######### TO DO ############
 /*
-    Add settings to choose how to display time. 
-    hh:mm:ss
-    mm:ss
-    mm
-    ss
+    Option to choose countdown name
+    Option to display days until countdowns
+    Make auto start daily work instead of just days
+    Add Help command | write docs
 */
 /* 
 

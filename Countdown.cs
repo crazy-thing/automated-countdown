@@ -3,12 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Collections.Generic;
-using System.Globalization; // Add this using statement
-
-
-// TO DO
-// HANDLE MULTIPLE COUNTDOWNS BETTER ( LET WRITE TO DIFFERENT FILES BASED ON USERS CHOICE )
-
+using System.Globalization;
 
 class Countdown
 {   
@@ -16,14 +11,10 @@ class Countdown
     private static Dictionary<string, CancellationTokenSource> countdowns = new Dictionary<string, CancellationTokenSource>();
     private static Dictionary<string, string> countdownNamesToIds = new Dictionary<string, string>();
     private static object lockObject = new object();
-    private static AppSettings countdownSettings = SettingsManager.GetCountdownSettings();
     private static string paddedCountdownOverText;
 
 
-    public static void ReloadSettings()
-    {
-        countdownSettings = SettingsManager.GetCountdownSettings();
-    }
+
 
     public static void StartCountdown(DateTime selectedDateTime)
     { 
@@ -35,7 +26,7 @@ class Countdown
             countdownNamesToIds.Add(countdownName, countdownId);
     
             CancellationTokenSource cts = new CancellationTokenSource();
-            Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownId));
+            Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownName));
 
             lock (lockObject)
             {
@@ -48,7 +39,7 @@ class Countdown
     public static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName)
     {
 
-        StreamWriter writer = new StreamWriter(countdownSettings.FilePath);
+        StreamWriter writer = new StreamWriter(SettingsManager.GetFilePath());
 
         string prevCountdownText = string.Empty;
         string prevCountDownOverText = string.Empty;
@@ -56,9 +47,9 @@ class Countdown
         while (!cancellationToken.IsCancellationRequested && DateTime.Now < targetDateTime)
         {
             TimeSpan timeRemaining = targetDateTime - DateTime.Now;
-            string formattedTime = timeRemaining.ToString("mm\\:ss");
-            string paddedCountdownText = $"{countdownSettings.CountdownText}: {formattedTime}".PadRight(prevCountdownText.Length);
-            paddedCountdownOverText = $"{countdownSettings.CountdownOverText}".PadRight(prevCountDownOverText.Length);
+            string formattedTime = timeRemaining.ToString(SettingsManager.GetCountdownFormat()); 
+            string paddedCountdownText = $"{SettingsManager.GetCountdownText()}: {formattedTime}".PadRight(prevCountdownText.Length);
+            paddedCountdownOverText = $"{SettingsManager.GetCountdownOverText()}".PadRight(prevCountDownOverText.Length);
 
 
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
