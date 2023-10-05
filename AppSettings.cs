@@ -8,6 +8,11 @@ class AppSettings
     public DateTime AutoCountdownDateTime {get; set;}
     public DayOfWeek AutoCountdownDay {get; set;}
     public string AutoCountdownTime {get; set;}
-
+    public Boolean AutoStartBibleVersesLoop {get; set;}
+    public int BibleVersesLoopInterval {get; set;}
+    public string BibleVersesFilePath {get; set;}
     
+
+    //     public string BibleVersesFilePath {get; set;}
+    //     public string BibleVersesInfoFilePath {get; set;}
 }

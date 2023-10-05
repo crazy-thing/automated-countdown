@@ -7,11 +7,6 @@ class Util
     {
         try
         {
-            if(inputParts.Length < 2)
-            {
-                Console.WriteLine("Invalid parameter. Please enter (countdown-text, countdown-over-text, countdown-format, file-path, auto-start-time)");
-                return;
-            }
             
             string setting = inputParts[1];
             string newSetting = string.Join(" ", inputParts.Skip(2));
@@ -71,8 +66,16 @@ class Util
                     DateTime selectedAutoStartDateTime = CalculateAutoStartDateTime(targetDayOfWeek, targetTime);
 
                     break;
+                case "bible-verses-interval":
+                    int newIntervalSeconds = int.Parse(newSetting);
+                    int newIntervalMs = newIntervalSeconds * 1000;
+                    SettingsManager.SetBibleVersesLoopInterval(newIntervalMs);
+                    break;
+                case "bible-verses-file-path":
+                    SettingsManager.SetBibleVersesFilePath(newSetting);
+                    break;
                 default:
-                    Console.WriteLine("Invalid parameter. Please enter (countdown-text, countdown-over-text, countdown-format, file-path, auto-start-time)");
+                    Console.WriteLine($"Invalid option. {Program.useHelp}");
                     break;
             }
 
@@ -110,3 +113,13 @@ class Util
     }
 
 }
+
+// extra 
+/*                 case "bible-verses-file-path":
+                    SettingsManager.SetBibleVersesFilePath(newSetting);
+                    break;
+                case "bible-verses-info-file-path":
+                    SettingsManager.SetBibleVersesInfoFilePath(newSetting);
+                    break; 
+                    
+                    */

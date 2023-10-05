@@ -8,9 +8,6 @@ using System.Globalization;
 class Countdown
 {   
 
-    private static Dictionary<string, CancellationTokenSource> countdowns = new Dictionary<string, CancellationTokenSource>();
-    private static Dictionary<string, string> countdownNamesToIds = new Dictionary<string, string>();
-    private static object lockObject = new object();
     private static string paddedCountdownOverText;
 
 
@@ -20,17 +17,17 @@ class Countdown
     { 
 
             Console.WriteLine("Started with time of: " + selectedDateTime);
-            string countdownName = $"countdown{countdownNamesToIds.Count + 1}";
+            string countdownName = $"countdown{Program.nameToIds.Count + 1}";
             string countdownId = Guid.NewGuid().ToString();
 
-            countdownNamesToIds.Add(countdownName, countdownId);
+            Program.nameToIds.Add(countdownName, countdownId);
     
             CancellationTokenSource cts = new CancellationTokenSource();
             Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownName));
 
-            lock (lockObject)
+            lock (Program.lockObject)
             {
-                countdowns.Add(countdownName, cts);
+                Program.tasks.Add(countdownName, cts);
             }
 
             Console.WriteLine($"Countdown started with name: {countdownName}");
@@ -68,8 +65,8 @@ class Countdown
             writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
             Console.WriteLine($"Countdown {countdownName} finished!");
-            StopCountdown(countdownName);
-            writer.Close();
+            Program.StopTask(countdownName);
+            writer.Dispose();
         }
         else
         {   
@@ -77,38 +74,13 @@ class Countdown
             writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
             Console.WriteLine($"Countdown {countdownName} canceled");
-            writer.Close();
+            writer.Dispose();
         }
     }
 
-    public static void StopCountdown(string countdownName)
-    {
-        lock (lockObject)
-        {
-            if (countdowns.TryGetValue(countdownName, out CancellationTokenSource cts))
-            {
-                cts.Cancel();
-                countdowns.Remove(countdownName);
-                countdownNamesToIds.Remove(countdownName);
-                Console.WriteLine($"Countdown {countdownName} stopped.");
-            }
-            else
-            {
-                Console.WriteLine($"Countdown {countdownName} not found.");
-            }            
-        }
-    }
 
-    public static void ShowAllCountdowns()
-    {
-        lock (lockObject)
-        {
-            foreach (var kvp in countdowns)
-            {
-                Console.WriteLine($"Countdown {kvp.Key}: {(kvp.Value.IsCancellationRequested ? "Canceled" : "Running")} ");
-            }
-        }
-    }
+
+
 
 }
 

@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        function refreshPage() {
+            setTimeout(function() {
+                location.reload();
+            }, 500);
+        }
+
+        window.onload = refreshPage;
+    </script>
+</head>
+<body>
+    <div class="template">
+        <div class="template-verse-info">
+            <p class="template-verse-info-text">Deuteronomy 26:2</p>
+        </div>
+        <div class="template-verse">
+            <p class="template-verse-text">take some of the firstfruits of all that you produce from the soil of the land the LORD your God is giving you and put them in a basket. Then go to the place the LORD your God will choose as a dwelling for his Name</p>
+        </div>
+    </div>
+
+</body>
+<style>
+    .body {
+        background: transparent;
+    }
+    .template {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .template-verse-info {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        font-size: 38px;
+        font-family: "Arial";
+    }
+    .template-verse {
+        max-width: 1200px;
+        font-size: 54px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        text-overflow: ellipsis ellipsis;
+        word-break: normal;
+        white-space: normal;
+        font-family: "Arial";
+    }
+
+    .template-verse-text {
+        width: 100%;
+    }
+
+</style>
+</html>

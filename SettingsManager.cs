@@ -12,7 +12,9 @@ class SettingsManager
     public static DateTime autoCountdownDateTime;
     public static DayOfWeek autoCountdownDay;
     public static string autoCountdownTime;
-
+    public static Boolean autoStartBibleVersesLoop;
+    public static int bibleVersesLoopInterval;
+    public static string bibleVersesFilePath;
     public static void LoadSettings()
     {
         try
@@ -30,6 +32,9 @@ class SettingsManager
                 autoCountdownDateTime = settings.AutoCountdownDateTime;
                 autoCountdownDay = settings.AutoCountdownDay;
                 autoCountdownTime = settings.AutoCountdownTime;
+                autoStartBibleVersesLoop = settings.AutoStartBibleVersesLoop;
+                bibleVersesLoopInterval = settings.BibleVersesLoopInterval;
+                bibleVersesFilePath = settings.BibleVersesFilePath;
 
             }
             else
@@ -54,6 +59,9 @@ class SettingsManager
             AutoCountdownDateTime = autoCountdownDateTime,
             AutoCountdownDay = autoCountdownDay,
             AutoCountdownTime = autoCountdownTime,
+            AutoStartBibleVersesLoop = autoStartBibleVersesLoop,
+            BibleVersesLoopInterval = bibleVersesLoopInterval,
+            BibleVersesFilePath = bibleVersesFilePath,
 
         };
 
@@ -74,6 +82,9 @@ class SettingsManager
             AutoCountdownDateTime = autoCountdownDateTime,
             AutoCountdownDay = autoCountdownDay,
             AutoCountdownTime = autoCountdownTime,
+            AutoStartBibleVersesLoop = autoStartBibleVersesLoop,
+            BibleVersesLoopInterval = bibleVersesLoopInterval,
+            BibleVersesFilePath = bibleVersesFilePath,
         };
 
     }
@@ -116,6 +127,18 @@ class SettingsManager
     {
         return autoCountdownTime;
     }
+    public static Boolean GetAutoStartBibleVersesLoop()
+    {
+        return autoStartBibleVersesLoop;
+    }
+    public static int GetBibleVersesLoopInterval()
+    {
+        return bibleVersesLoopInterval;
+    }
+    public static string GetBibleVersesFilePath()
+    {
+        return bibleVersesFilePath;
+    }
     public static void SetCountdownText(string newText)
     {
         countdownText = newText;
@@ -152,9 +175,62 @@ class SettingsManager
     {
         autoCountdownDay = newAutoCountdownDay;
     }
-
     public static void SetAutoCountdownTime(string newAutoCountdownTime)
     {
         autoCountdownTime = newAutoCountdownTime;
     }
+    public static void SetAutoStartBibleVersesLoop(Boolean newValue)
+    {
+        autoStartBibleVersesLoop = newValue;
+        SaveSettings();
+    }
+    public static void SetBibleVersesLoopInterval(int newInterval)
+    {
+        bibleVersesLoopInterval = newInterval;
+    }
+    public static void SetBibleVersesFilePath(string newFilePath)
+    {
+        bibleVersesFilePath = newFilePath;
+    }
 }
+
+/*
+    public static string bibleVersesFilePath;
+    public static string bibleVersesInfoFilePath;
+                
+    bibleVersesFilePath = settings.BibleVersesFilePath;
+    bibleVersesInfoFilePath = settings.BibleVersesInfoFilePath;
+
+    BibleVersesFilePath = bibleVersesFilePath,
+    BibleVersesInfoFilePath = bibleVersesInfoFilePath,
+    
+    BibleVersesFilePath = bibleVersesFilePath,
+    BibleVersesInfoFilePath = bibleVersesInfoFilePath,
+
+    public static string GetBibleVersesFilePath()
+    {
+        return bibleVersesFilePath;
+    }
+    public static string GetBibleVersesInfoFilePath()
+    {
+        return bibleVersesInfoFilePath;
+    }
+
+    public static void SetBibleVersesFilePath(string newFilePath)
+    {
+        bibleVersesFilePath = newFilePath;
+    }
+    public static void SetBibleVersesInfoFilePath(string newFilePath)
+    {
+        bibleVersesInfoFilePath = newFilePath;
+    }
+
+
+
+
+
+
+
+
+
+*/
