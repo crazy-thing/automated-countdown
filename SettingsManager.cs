@@ -22,6 +22,13 @@ class SettingsManager
     {
         try
         {
+            if (!File.Exists(jsonFilePath))
+            {
+                var defaultSettings = new AppSettings();
+                string settingsJson = JsonSerializer.Serialize(defaultSettings);
+                File.WriteAllText(jsonFilePath, settingsJson);
+            }
+
             string json = File.ReadAllText(jsonFilePath);
             var settings = JsonSerializer.Deserialize<AppSettings>(json);
 
@@ -218,44 +225,3 @@ class SettingsManager
         bibleVersesGenre = newGenre;
     }
 }
-
-/*
-    public static string bibleVersesFilePath;
-    public static string bibleVersesInfoFilePath;
-                
-    bibleVersesFilePath = settings.BibleVersesFilePath;
-    bibleVersesInfoFilePath = settings.BibleVersesInfoFilePath;
-
-    BibleVersesFilePath = bibleVersesFilePath,
-    BibleVersesInfoFilePath = bibleVersesInfoFilePath,
-    
-    BibleVersesFilePath = bibleVersesFilePath,
-    BibleVersesInfoFilePath = bibleVersesInfoFilePath,
-
-    public static string GetBibleVersesFilePath()
-    {
-        return bibleVersesFilePath;
-    }
-    public static string GetBibleVersesInfoFilePath()
-    {
-        return bibleVersesInfoFilePath;
-    }
-
-    public static void SetBibleVersesFilePath(string newFilePath)
-    {
-        bibleVersesFilePath = newFilePath;
-    }
-    public static void SetBibleVersesInfoFilePath(string newFilePath)
-    {
-        bibleVersesInfoFilePath = newFilePath;
-    }
-
-
-
-
-
-
-
-
-
-*/

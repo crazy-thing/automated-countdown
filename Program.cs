@@ -1,5 +1,5 @@
 using System;
-using Microsoft.VisualBasic;
+using System.Text.RegularExpressions;
 
 // ######### TO DO ############
 /*
@@ -23,9 +23,9 @@ class Program
     public static string helpCmdInfo = @"
     Start command used to start a specific task. Countdown option requires a date and time
     start 
-        ""countdown"" (""yyyy-mm-dd"") (""hh:mm:ss"") 
-        ""bible-verses"" 
-        ""countdown-verses""
+        countdown (yyyy-mm-dd) (hh:mm:ss) **OPTIONAL** name (""enter-name-here"") file-path (""C:\Enter\File\path\here.txt"")
+        bible-verses  **OPTIONAL** name (""enter-name-here"") file-path (""C:\Enter\File\path\here.txt"")
+        countdown-verses
 
     Stop command used to stop a specific task. Requires the name of the task to stop
     stop (""task-name"")
@@ -36,68 +36,68 @@ class Program
     Set command used to configure a setting. Each setting option requires arguments
     set
         Sets the text to be displayed with the time
-        ""countdown-text"" (""enter text here"")
+        countdown-text (enter text here)
 
         Sets the text to be displayed when the time is over
-        ""countdown-over-text"" (""enter text here"")
+        countdown-over-text (enter text here)
 
-        Sets the format for the time to be displayed in ""hh:mm:ss"" ""mm:ss""
-        ""countdown-format"" (""enter format here"") 
+        Sets the format for the time to be displayed in hh:mm:ss mm:ss
+        countdown-format (enter format here) 
             *Allowed Formats: 
-                ""hh:mm:ss"",
-                ""hh:mm"", 
-                ""hh:ss"", 
-                ""hh"",
-                ""mm:ss"",
-                ""mm"",
-                ""ss""* 
+                hh:mm:ss,
+                hh:mm, 
+                hh:ss, 
+                hh,
+                mm:ss,
+                mm,
+                ss* 
 
         Sets the file path for where to write the countdown time to
-        ""file-path"" (""C:\Enter\File Path\here\file.txt"")
+        file-path (C:\Enter\File Path\here\file.txt)
 
         Sets day and time for the countdown to automatically count to
-        ""auto-start-time"" (""full day of week, e.g: monday, tuesday, etc"") (""hh:mm:ss"")
+        auto-start-time (full day of week, e.g: monday, tuesday, etc) (hh:mm:ss)
 
         Sets how often for new bible verses to be displayed
-        bible-verses-interval (""number in seconds e.g: 10 "")
+        bible-verses-interval (number in seconds e.g: 10 )
 
         Sets the file path for where to write bible verses to
-        bible-verses-file-path (""C:\Enter\Bilbe Verses\File\path\here.txt"")
+        bible-verses-file-path (C:\Enter\Bilbe Verses\File\path\here.txt)
 
         Sets the translation for the bible verses
         bible-verses-translation
             Available Options:
-                ""ASV""
-                ""BBE""
-                ""DARBY""
-                ""KJV""
-                ""WEB""
-                ""YLT""
-                ""ESV""
-                ""NIV""
-                ""NLT""
+                ASV
+                BBE
+                DARBY
+                KJV
+                WEB
+                YLT
+                ESV
+                NIV
+                NLT
 
         Sets the genre to get bible verses from
         bible-verses-genre
-            ""All""
-            ""Law""
-            ""History""
-            ""Wisdom""
-            ""Prophets""
-            ""Gospels""
-            ""Acts""
-            ""Epistles""
-            ""Apocalyptic""
+            All
+            Law
+            History
+            Wisdom
+            Prophets
+            Gospels
+            Acts
+            Epistles
+            Apocalyptic
 
     Enable-auto-start command used to configure a setting to auto start a task on program startup. ""countdown"" for countdown timer and ""bible-verses"" for bible verses.
     enable-auto-start
-        ""countdown""
-        ""bible-verses""
+        countdown
+        bible-verses
 
     Disable-auto-start command used to configure a setting to not start a task on program startup. ""countdown"" for countdown timer and ""bible-verses"" for bible verses.
     disable-auto-start
-        ""countdown""
-        ""bible-verses""
+        countdown
+        bible-verses
 
     Exit command used to close close program
     exit
@@ -139,7 +139,15 @@ class Program
             Console.WriteLine($"Enter a command. {useHelp} ");
             string userInput = Console.ReadLine();
 
-            string[] inputParts = userInput.Split(' ');
+            string[] inputParts = Regex.Matches(userInput, @"[\""].+?[\""]|[^ ]+")
+                            .Cast<Match>()
+                            .Select(m => m.Value)
+                            .ToArray();;
+
+            foreach(var part in inputParts)
+            {
+                Console.WriteLine(part);
+            }
 
             string command = inputParts[0].ToLower();
 
@@ -154,11 +162,8 @@ class Program
                 case "start":
                     if (inputParts.Length > 1)
                     {
-
-
                         switch (inputParts[1])
                         {
-
                             case "countdown":
                                 if (inputParts.Length > 2)
                                 {
@@ -175,14 +180,13 @@ class Program
                                 string filePath = null;
                                 if (inputParts.Length > 4)
                                 {
-
                                     switch (inputParts[4])
                                     {
                                         case "name":
-                                            countdownName = inputParts[5];
+                                            countdownName = inputParts[5].Trim('"');
                                             break;
                                         case "file-path":
-                                            filePath = inputParts[5];
+                                            filePath = inputParts[5].Trim('"');
                                             break;
                                         default:
                                             Console.WriteLine("No options provided. Using default settings");
@@ -193,10 +197,10 @@ class Program
                                         switch (inputParts[6])
                                         {
                                             case "name":
-                                                countdownName = inputParts[7];
+                                                countdownName = inputParts[7].Trim('"');
                                                 break;
                                             case "file-path":
-                                                filePath = inputParts[7];
+                                                filePath = inputParts[7].Trim('"');
                                                 break;
                                             default:
                                                 Console.WriteLine("No second option. Using default settings");
@@ -215,14 +219,13 @@ class Program
                                 string versesFilePath = null;
                                 if (inputParts.Length > 2)
                                 {
-
                                     switch (inputParts[2])
                                     {
                                         case "name":
-                                            versesName = inputParts[3];
+                                            versesName = inputParts[3].Trim('"');
                                             break;
                                         case "file-path":
-                                            versesFilePath = inputParts[3];
+                                            versesFilePath = inputParts[3].Trim('"');
                                             break;
                                         default:
                                             Console.WriteLine("No options provided. Using default settings");
@@ -233,10 +236,10 @@ class Program
                                         switch (inputParts[4])
                                         {
                                             case "name":
-                                                versesName = inputParts[5];
+                                                versesName = inputParts[5].Trim('"');
                                                 break;
                                             case "file-path":
-                                                versesFilePath = inputParts[5];
+                                                versesFilePath = inputParts[5].Trim('"');
                                                 break;
                                             default:
                                                 Console.WriteLine("No second option. Using default settings");
@@ -263,12 +266,11 @@ class Program
                     {
                         Console.WriteLine($"No option provided. {useHelp}");
                     }
-
                     break;
                 case "stop":
                     if (inputParts.Length > 1)
                     {
-                        StopTask(inputParts[1]);
+                        StopTask(inputParts[1].Trim('"'));
                     }
                     else
                     {

@@ -45,7 +45,7 @@ class BibleVersesWriter
         {
         int interval = SettingsManager.GetBibleVersesLoopInterval();
 
-        BibleVerseModel bibleVerseModel = BibleVerses.GetBibleVerse().Result;
+        BibleVerseModel bibleVerseModel = await BibleVerses.GetBibleVerse();
         string bibleVerseInfo = $"{bibleVerseModel.book.name} {bibleVerseModel.chapterId}:{bibleVerseModel.verseId}";
 
         template = template.Replace(prevBibleVerseInfo, bibleVerseInfo).Replace(prevBibleVerse, bibleVerseModel.verse);

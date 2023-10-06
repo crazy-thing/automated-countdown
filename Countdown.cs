@@ -7,12 +7,7 @@ using System.Globalization;
 
 class Countdown
 {   
-
     private static string paddedCountdownOverText;
-
-
-
-
     public static void StartCountdown(DateTime selectedDateTime, string countdownName = null, string filePath = null)
     { 
 
