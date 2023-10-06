@@ -6,14 +6,24 @@ class BibleVersesWriter
     public static Dictionary<string, string> nameToIds = new Dictionary<string, string>();
 
 
-    public static void StartBibleVerses()
+    public static void StartBibleVerses(string bibleVersesName = null, string versesFilePath = null)
     {
-        string bibleVersesName = $"verses{Program.nameToIds.Count + 1}";
+        
+        if (string.IsNullOrWhiteSpace(bibleVersesName))
+            {
+                bibleVersesName = $"verses{Program.nameToIds.Count + 1}";
+            }
+
         string bibleVersesId = Guid.NewGuid().ToString();
+
+        if (string.IsNullOrWhiteSpace(versesFilePath))
+            {
+                versesFilePath = SettingsManager.GetBibleVersesFilePath();
+            }
 
         Program.nameToIds.Add(bibleVersesName, bibleVersesId);
         CancellationTokenSource cts = new CancellationTokenSource();
-        Task.Run(() => StartBibleVersesInternal(cts, bibleVersesName));
+        Task.Run(() => StartBibleVersesInternal(cts, bibleVersesName, versesFilePath));
 
         lock (Program.lockObject)
         {
@@ -22,9 +32,8 @@ class BibleVersesWriter
 
     }
 
-    public static async Task StartBibleVersesInternal(CancellationTokenSource cts, string bibleVersesName)
+    public static async Task StartBibleVersesInternal(CancellationTokenSource cts, string bibleVersesName, string filePath)
     {
-        string filePath = SettingsManager.GetBibleVersesFilePath();
 
         CreateDefaultTemplate(filePath);
 
@@ -43,8 +52,7 @@ class BibleVersesWriter
 
         prevBibleVerseInfo = bibleVerseInfo;
         prevBibleVerse = bibleVerseModel.verse;
-        File.WriteAllText(SettingsManager.GetBibleVersesFilePath(), template);
-        Console.WriteLine("DONE");
+        File.WriteAllText(filePath, template);
 
         Thread.Sleep(interval);
         }

@@ -1,14 +1,15 @@
 using System;
+using Microsoft.VisualBasic;
 
 // ######### TO DO ############
 /*
     Finish error handling in Util.cs in the handle settings config
     Add variables to easily allow editing of the bible verses template css
     Add option to link countdown timer and bible verses interval
-    Option to start with specific file path
-    Option to choose countdown name
     Option to display days until countdowns
     Make auto start daily work instead of just days
+    Organize settings
+    Add a notepad file that can be opened with edit command to edit the html template for bible-verses
 */
 /* 
 
@@ -63,6 +64,31 @@ class Program
         Sets the file path for where to write bible verses to
         bible-verses-file-path (""C:\Enter\Bilbe Verses\File\path\here.txt"")
 
+        Sets the translation for the bible verses
+        bible-verses-translation
+            Available Options:
+                ""ASV""
+                ""BBE""
+                ""DARBY""
+                ""KJV""
+                ""WEB""
+                ""YLT""
+                ""ESV""
+                ""NIV""
+                ""NLT""
+
+        Sets the genre to get bible verses from
+        bible-verses-genre
+            ""All""
+            ""Law""
+            ""History""
+            ""Wisdom""
+            ""Prophets""
+            ""Gospels""
+            ""Acts""
+            ""Epistles""
+            ""Apocalyptic""
+
     Enable-auto-start command used to configure a setting to auto start a task on program startup. ""countdown"" for countdown timer and ""bible-verses"" for bible verses.
     enable-auto-start
         ""countdown""
@@ -92,7 +118,7 @@ class Program
             DateTime startTime = Util.CalculateAutoStartDateTime(settings.AutoCountdownDay, settings.AutoCountdownTime);
 
             Countdown.StartCountdown(startTime);
-        } 
+        }
         else
         {
             Console.WriteLine("Auto Start Countdown is disabled");
@@ -126,42 +152,117 @@ class Program
                     Console.WriteLine(helpCmdInfo);
                     break;
                 case "start":
-                if (inputParts.Length > 1)
-                {
-                    if (inputParts.Length > 2)
-                    {
-                        string dateStr = inputParts[2];
-                        string timeStr = inputParts[3];
-
-                        if (!DateTime.TryParseExact(dateStr + " " + timeStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out selectedDateTime))
-                            {
-                                Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
-                                return;
-                            }
-                    }
-
-                    switch (inputParts[1])
+                    if (inputParts.Length > 1)
                     {
 
-                        case "countdown":
-                            Countdown.StartCountdown(selectedDateTime);
-                            break;
-                        case "bible-verses":
-                            BibleVersesWriter.StartBibleVerses();
-                            break;
-                        case "countdown-verses":
-                            Countdown.StartCountdown(selectedDateTime);
-                            BibleVersesWriter.StartBibleVerses();
-                            break;
-                        default:
-                            Console.WriteLine($"Invalid option. {useHelp}");
-                            break;
+
+                        switch (inputParts[1])
+                        {
+
+                            case "countdown":
+                                if (inputParts.Length > 2)
+                                {
+                                    string dateStr = inputParts[2];
+                                    string timeStr = inputParts[3];
+
+                                    if (!DateTime.TryParseExact(dateStr + " " + timeStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out selectedDateTime))
+                                    {
+                                        Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
+                                        return;
+                                    }
+                                }
+                                string countdownName = null;
+                                string filePath = null;
+                                if (inputParts.Length > 4)
+                                {
+
+                                    switch (inputParts[4])
+                                    {
+                                        case "name":
+                                            countdownName = inputParts[5];
+                                            break;
+                                        case "file-path":
+                                            filePath = inputParts[5];
+                                            break;
+                                        default:
+                                            Console.WriteLine("No options provided. Using default settings");
+                                            break;
+                                    }
+                                    if (inputParts.Length > 6)
+                                    {
+                                        switch (inputParts[6])
+                                        {
+                                            case "name":
+                                                countdownName = inputParts[7];
+                                                break;
+                                            case "file-path":
+                                                filePath = inputParts[7];
+                                                break;
+                                            default:
+                                                Console.WriteLine("No second option. Using default settings");
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No second option");
+                                    }
+                                }
+                                Countdown.StartCountdown(selectedDateTime, countdownName, filePath);
+                                break;
+                            case "bible-verses":
+                                string versesName = null;
+                                string versesFilePath = null;
+                                if (inputParts.Length > 2)
+                                {
+
+                                    switch (inputParts[2])
+                                    {
+                                        case "name":
+                                            versesName = inputParts[3];
+                                            break;
+                                        case "file-path":
+                                            versesFilePath = inputParts[3];
+                                            break;
+                                        default:
+                                            Console.WriteLine("No options provided. Using default settings");
+                                            break;
+                                    }
+                                    if (inputParts.Length > 4)
+                                    {
+                                        switch (inputParts[4])
+                                        {
+                                            case "name":
+                                                versesName = inputParts[5];
+                                                break;
+                                            case "file-path":
+                                                versesFilePath = inputParts[5];
+                                                break;
+                                            default:
+                                                Console.WriteLine("No second option. Using default settings");
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No second option");
+                                    }
+                                }
+                                BibleVersesWriter.StartBibleVerses(versesName, versesFilePath);
+                                break;
+                            case "countdown-verses":
+                                Countdown.StartCountdown(selectedDateTime);
+                                BibleVersesWriter.StartBibleVerses();
+                                break;
+                            default:
+                                Console.WriteLine($"Invalid option. {useHelp}");
+                                break;
+                        }
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"No option provided. {useHelp}");
-                }
+                    else
+                    {
+                        Console.WriteLine($"No option provided. {useHelp}");
+                    }
 
                     break;
                 case "stop":
@@ -180,7 +281,7 @@ class Program
                 case "set":
                     if (inputParts.Length > 1)
                     {
-                    Util.SetSettings(inputParts);
+                        Util.SetSettings(inputParts);
                     }
                     else
                     {
@@ -190,8 +291,8 @@ class Program
                 case "enable-auto-start":
                     if (inputParts.Length > 1)
                     {
-                    switch (inputParts[1])
-                    {
+                        switch (inputParts[1])
+                        {
                             case "countdown":
                                 SettingsManager.SetAutoStartCountdown(true);
                                 break;
@@ -201,7 +302,7 @@ class Program
                             default:
                                 Console.WriteLine($"Invalid command. {useHelp}");
                                 break;
-                    }
+                        }
                     }
                     else
                     {
@@ -238,7 +339,7 @@ class Program
 
 
         }
-    }    
+    }
     public static void ShowAllTasks()
     {
         lock (lockObject)

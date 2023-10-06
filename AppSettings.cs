@@ -11,6 +11,8 @@ class AppSettings
     public Boolean AutoStartBibleVersesLoop {get; set;}
     public int BibleVersesLoopInterval {get; set;}
     public string BibleVersesFilePath {get; set;}
+    public string BibleVersesTranslation {get; set;}
+    public string BibleVersesGenre {get; set;}
     
 
     //     public string BibleVersesFilePath {get; set;}

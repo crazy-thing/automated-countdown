@@ -2,7 +2,8 @@ class Util
 {   
     private static string[] autoStartOptsDays = {"daily", "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
     private static string[] allowedFormats = {"hh:mm:ss", "hh:mm", "hh:ss", "hh","mm:ss","mm","ss"};
-
+    private static string[] allowedTranslations = {"ASV", "BBE", "DARBY", "KJV", "WEB", "YLT", "ESV", "NIV", "NLT"};
+    public static string[] allowedGenres = {"All", "Law", "History", "Wisdom", "Prophets","Gospels", "Acts", "Epistles", "Apocalyptic"};
         public static void SetSettings(string[] inputParts)
     {
         try
@@ -10,7 +11,6 @@ class Util
             
             string setting = inputParts[1];
             string newSetting = string.Join(" ", inputParts.Skip(2));
-            Console.WriteLine("selected setting:" + setting);
 
             switch (setting)
             {
@@ -31,7 +31,7 @@ class Util
                     }
                     else
                     {
-                        Console.WriteLine("Invalid format. Please enter a valid display format. (hh:mm:ss, mm:ss, mm, ss, etc..)");
+                        Console.WriteLine($"Invalid format. Please enter a valid display format. {allowedFormats}");
                     }
                     break;
                 case "file-path":
@@ -73,6 +73,27 @@ class Util
                     break;
                 case "bible-verses-file-path":
                     SettingsManager.SetBibleVersesFilePath(newSetting);
+                    break;
+                case "bible-verses-translation":
+                    if(allowedTranslations.Contains(newSetting))
+                    {
+                        SettingsManager.SetBibleVersesTranslation(newSetting);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid translation. Please choose from {ASV, BBE, DARBY, KJV, WEB, YLT, ESV, NIV, NLT}");
+                    }
+
+                    break;
+                case "bible-verses-genre":
+                    if (allowedGenres.Contains(newSetting))
+                    {
+                        SettingsManager.SetBibleVersesGenre(newSetting);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid genre. Please choose from {All, Law, History, Prophets, Gospels, Acts, Epistles, Apocalyptic}.");
+                    }
                     break;
                 default:
                     Console.WriteLine($"Invalid option. {Program.useHelp}");

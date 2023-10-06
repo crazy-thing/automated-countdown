@@ -13,17 +13,26 @@ class Countdown
 
 
 
-    public static void StartCountdown(DateTime selectedDateTime)
+    public static void StartCountdown(DateTime selectedDateTime, string countdownName = null, string filePath = null)
     { 
 
             Console.WriteLine("Started with time of: " + selectedDateTime);
-            string countdownName = $"countdown{Program.nameToIds.Count + 1}";
-            string countdownId = Guid.NewGuid().ToString();
+            
+            if (string.IsNullOrWhiteSpace(countdownName))
+            {
+                countdownName = $"countdown{Program.nameToIds.Count + 1}";
+            }
 
+            string countdownId = Guid.NewGuid().ToString();
             Program.nameToIds.Add(countdownName, countdownId);
+
+            if(string.IsNullOrWhiteSpace(filePath))
+            {
+                filePath = SettingsManager.GetFilePath();
+            }
     
             CancellationTokenSource cts = new CancellationTokenSource();
-            Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownName));
+            Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownName, filePath));
 
             lock (Program.lockObject)
             {
@@ -33,10 +42,10 @@ class Countdown
             Console.WriteLine($"Countdown started with name: {countdownName}");
     }
 
-    public static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName)
+    public static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName, string filePath)
     {
 
-        StreamWriter writer = new StreamWriter(SettingsManager.GetFilePath());
+        StreamWriter writer = new StreamWriter(filePath);
 
         string prevCountdownText = string.Empty;
         string prevCountDownOverText = string.Empty;

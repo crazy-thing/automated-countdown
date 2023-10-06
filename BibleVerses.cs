@@ -1,14 +1,26 @@
+using System.Collections;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.VisualBasic;
 
 class BibleVerses
 {
 
     private static string fullUrl;
     private static string baseApiUrl = "https://bible-go-api.rkeplin.com/v1/books";
-    private static string translation = "NIV";
 
+    public class Book
+    {
+        public int id { get; set; }
+        public Genre genre { get; set; }
+    }
+
+    public class Genre
+    {
+        public string name { get; set; }
+    }
 
     public static string GetRandomNum(int minValue, int maxValue)
     {
@@ -21,13 +33,72 @@ class BibleVerses
         return randomNum;
     }
 
-    public static async Task GetFullUrl()
+    public static async Task<string> GetBookIdByGenre(string genre)
     {
         HttpClient httpClient = new HttpClient();
         try
+        {
+            HttpResponseMessage booksRes = await httpClient.GetAsync(baseApiUrl);
+            if (booksRes.IsSuccessStatusCode)
             {
+                string bookResContent = await booksRes.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions {PropertyNameCaseInsensitive = true};
+                var books = JsonSerializer.Deserialize<Book[]>(bookResContent, options);
+
+                var filteredBooks = books.Where(book => book.genre.name == genre).ToList();
+
+                List<int> bookIds = new List<int>();
+
+                foreach (var book in filteredBooks)
+                {
+                    Console.WriteLine($"id {book.id} and genre {book.genre.name}");
+                    bookIds.Add(book.id);
+                }
+                string randomBookNum = GetRandomNum(bookIds.First(), bookIds.Last() + 1);
+                Console.WriteLine(randomBookNum);
+                return randomBookNum;
+            }
+            else
+            {
+                Console.WriteLine("Failed to fetch");
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+        return null;
+    }
+
+    public static async Task GetFullUrl()
+    {   
+        string searchByGenre = SettingsManager.GetBibleVersesGenre();
+
+        HttpClient httpClient = new HttpClient();
+        try
+            {
+            
+            string bookNum = string.Empty;
+            if (searchByGenre == "All")
+            {
+                bookNum = GetRandomNum(1, 66);
+            }
+            else
+            {
+                if (Util.allowedGenres.Contains(searchByGenre))
+                {
+                    bookNum = await GetBookIdByGenre(searchByGenre);
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid genre. Please choose from {Util.allowedGenres}");
+                }
+            }
+
+
             List<int> allVerses = new List<int>();
-            string bookNum = GetRandomNum(1, 66);
             string bookUrl = $"{baseApiUrl}/{bookNum}/chapters";
             int bookLen = 0;
             HttpResponseMessage bookResponse = await httpClient.GetAsync(bookUrl);
@@ -65,7 +136,7 @@ class BibleVerses
             int last = allVerses[allVerses.Count - 1];
             int first = allVerses[0];
             string verseId = GetRandomNum(first, last);
-            fullUrl = $"{chapUrl}/{verseId}?translation={translation}";
+            fullUrl = $"{chapUrl}/{verseId}?translation={SettingsManager.GetBibleVersesTranslation()}";
 
             }
         
@@ -107,7 +178,6 @@ class BibleVerses
         }
         finally
         {
-            Console.WriteLine("FINSIEHD");
             httpClient.Dispose();
         }
 

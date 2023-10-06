@@ -15,6 +15,9 @@ class SettingsManager
     public static Boolean autoStartBibleVersesLoop;
     public static int bibleVersesLoopInterval;
     public static string bibleVersesFilePath;
+    public static string bibleVersesTranslation;
+    public static string bibleVersesGenre;
+
     public static void LoadSettings()
     {
         try
@@ -35,6 +38,8 @@ class SettingsManager
                 autoStartBibleVersesLoop = settings.AutoStartBibleVersesLoop;
                 bibleVersesLoopInterval = settings.BibleVersesLoopInterval;
                 bibleVersesFilePath = settings.BibleVersesFilePath;
+                bibleVersesTranslation = settings.BibleVersesTranslation;
+                bibleVersesGenre = settings.BibleVersesGenre;
 
             }
             else
@@ -62,6 +67,8 @@ class SettingsManager
             AutoStartBibleVersesLoop = autoStartBibleVersesLoop,
             BibleVersesLoopInterval = bibleVersesLoopInterval,
             BibleVersesFilePath = bibleVersesFilePath,
+            BibleVersesTranslation = bibleVersesTranslation,
+            BibleVersesGenre = bibleVersesGenre,
 
         };
 
@@ -85,6 +92,8 @@ class SettingsManager
             AutoStartBibleVersesLoop = autoStartBibleVersesLoop,
             BibleVersesLoopInterval = bibleVersesLoopInterval,
             BibleVersesFilePath = bibleVersesFilePath,
+            BibleVersesTranslation = bibleVersesTranslation,
+            BibleVersesGenre = bibleVersesGenre,
         };
 
     }
@@ -139,6 +148,14 @@ class SettingsManager
     {
         return bibleVersesFilePath;
     }
+    public static string GetBibleVersesTranslation()
+    {
+        return bibleVersesTranslation;
+    }
+    public static string GetBibleVersesGenre()
+    {
+        return bibleVersesGenre;
+    }
     public static void SetCountdownText(string newText)
     {
         countdownText = newText;
@@ -191,6 +208,14 @@ class SettingsManager
     public static void SetBibleVersesFilePath(string newFilePath)
     {
         bibleVersesFilePath = newFilePath;
+    }
+    public static void SetBibleVersesTranslation(string newTranslation)
+    {
+        bibleVersesTranslation = newTranslation;
+    }
+    public static void SetBibleVersesGenre(string newGenre)
+    {
+        bibleVersesGenre = newGenre;
     }
 }
 
