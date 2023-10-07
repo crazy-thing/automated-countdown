@@ -1,0 +1,9 @@
+
+verseInfoFont=Arial
+verseInfoFontSize=48
+verseInfoTextColor=#fff
+
+verseFont=Arial
+verseFontSize=60
+verseTextColor=#fff
+

@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 class BibleVersesWriter
 {
     public static Dictionary<string, string> nameToIds = new Dictionary<string, string>();
+    public static string variablesPath = "verses-variables.txt";
 
 
     public static void StartBibleVerses(string bibleVersesName = null, string versesFilePath = null)
@@ -112,12 +114,13 @@ class BibleVersesWriter
         text-align: center;
         justify-content: center;
         align-items: center;
-        font-size: 38px;
-        font-family: ""Arial"";
+        font-size: {verseInfoFontSize}px;
+        font-family: ""{verseInfoFont}"";
+        color: {verseInfoTextColor};
     }
     .template-verse {
         max-width: 1200px;
-        font-size: 54px;
+        font-size: {verseFontSize}px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -125,7 +128,8 @@ class BibleVersesWriter
         text-overflow: ellipsis ellipsis;
         word-break: normal;
         white-space: normal;
-        font-family: ""Arial"";
+        font-family: ""{verseFont}"";
+        color: {verseTextColor};
     }
 
     .template-verse-text {
@@ -136,7 +140,49 @@ class BibleVersesWriter
 </html>
 ";
 
+    var variableDict = new Dictionary<string, string>();
+    foreach (string line in File.ReadLines(variablesPath))
+    {
+        string[] parts = line.Split('=');
+        if (parts.Length == 2)
+        {
+            variableDict[parts[0].Trim()] = parts[1].Trim();
+        }
+    }
+
+    foreach(var variable in variableDict)
+    {
+        string variablePlaceholder = "{" + variable.Key + "}";
+        defaultTemplate = defaultTemplate.Replace(variablePlaceholder, variable.Value);
+    }
+    
     File.WriteAllText(filePath, defaultTemplate);
+    }
+
+    public static void EditBibleVersesVariables()
+    {
+        string defaultVariables = 
+@"
+verseInfoFont=Arial
+verseInfoFontSize=48
+verseInfoTextColor=#fff
+
+verseFont=Arial
+verseFontSize=60
+verseTextColor=#fff
+
+";
+        if (File.Exists(variablesPath))
+        {
+            Process.Start("notepad.exe", variablesPath);
+        }
+        else
+        {
+            File.WriteAllText(variablesPath, defaultVariables);
+            Process.Start("notepad.exe", variablesPath);
+        }
+
+
     }
 
 }

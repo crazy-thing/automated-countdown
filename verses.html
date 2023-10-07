@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        function refreshPage() {
+            setTimeout(function() {
+                location.reload();
+            }, 500);
+        }
+
+        window.onload = refreshPage;
+    </script>
+</head>
+<body>
+    <div class="template">
+        <div class="template-verse-info">
+            <p class="template-verse-info-text">Zephaniah 1:16</p>
+        </div>
+        <div class="template-verse">
+            <p class="template-verse-text">a day of trumpet and battle cry against the fortified cities and against the corner towers.</p>
+        </div>
+    </div>
+
+</body>
+<style>
+    .body {
+        background: transparent;
+    }
+    .template {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .template-verse-info {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        font-family: "Arial";
+        color: #fff;
+    }
+    .template-verse {
+        max-width: 1200px;
+        font-size: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        text-overflow: ellipsis ellipsis;
+        word-break: normal;
+        white-space: normal;
+        font-family: "Arial";
+        color: #fff;
+    }
+
+    .template-verse-text {
+        width: 100%;
+    }
+
+</style>
+</html>

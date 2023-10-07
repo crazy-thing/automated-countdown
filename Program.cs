@@ -1,15 +1,14 @@
 using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 // ######### TO DO ############
 /*
-    Finish error handling in Util.cs in the handle settings config
-    Add variables to easily allow editing of the bible verses template css
+    Make new command handling method to improve readability and efficiency
     Add option to link countdown timer and bible verses interval
     Option to display days until countdowns
     Make auto start daily work instead of just days
     Organize settings
-    Add a notepad file that can be opened with edit command to edit the html template for bible-verses
 */
 /* 
 
@@ -98,6 +97,8 @@ class Program
     disable-auto-start
         countdown
         bible-verses
+    Edit-bible-verses command used to open a txt file to configure settings for the bible verses display. Changes can be made to the font, font-size, and color
+    edit-bible-verses
 
     Exit command used to close close program
     exit
@@ -144,11 +145,6 @@ class Program
                             .Select(m => m.Value)
                             .ToArray();;
 
-            foreach(var part in inputParts)
-            {
-                Console.WriteLine(part);
-            }
-
             string command = inputParts[0].ToLower();
 
             DateTime selectedDateTime = DateTime.Now;
@@ -165,95 +161,159 @@ class Program
                         switch (inputParts[1])
                         {
                             case "countdown":
-                                if (inputParts.Length > 2)
+                                if (inputParts.Length > 3)
                                 {
                                     string dateStr = inputParts[2];
                                     string timeStr = inputParts[3];
 
                                     if (!DateTime.TryParseExact(dateStr + " " + timeStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out selectedDateTime))
                                     {
-                                        Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
-                                        return;
+                                        Console.WriteLine("Missing or invalid options. Please enter a date and time in the format yyyy:mm-dd hh:mm:ss");
+                                        break;
                                     }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Missing or invalid options. Please enter a date and time in the format yyyy:mm-dd hh:mm:ss ");
+                                    break;
                                 }
                                 string countdownName = null;
                                 string filePath = null;
                                 if (inputParts.Length > 4)
                                 {
-                                    switch (inputParts[4])
+                                    if (inputParts.Length > 5 && inputParts[5].StartsWith('"') && inputParts[5].EndsWith('"'))
                                     {
-                                        case "name":
-                                            countdownName = inputParts[5].Trim('"');
-                                            break;
-                                        case "file-path":
-                                            filePath = inputParts[5].Trim('"');
-                                            break;
-                                        default:
-                                            Console.WriteLine("No options provided. Using default settings");
-                                            break;
-                                    }
-                                    if (inputParts.Length > 6)
-                                    {
-                                        switch (inputParts[6])
+                                        switch (inputParts[4])
                                         {
                                             case "name":
-                                                countdownName = inputParts[7].Trim('"');
+                                                countdownName = inputParts[5].Trim('"');
                                                 break;
                                             case "file-path":
-                                                filePath = inputParts[7].Trim('"');
+                                                filePath = inputParts[5].Trim('"');
                                                 break;
                                             default:
-                                                Console.WriteLine("No second option. Using default settings");
-                                                break;
+                                                Console.WriteLine("Invalid option. Use name or file-path");
+                                                goto countdownBreakLabel;
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine("No second option");
+                                        Console.WriteLine("Missing or empty value given after first option. Make sure to put \" \" around the value e.g. name \"enter name here\" Use 'help' command for more details.");
+                                        break;
+                                    }
+                                    if (inputParts.Length > 6)
+                                    {
+                                        if (inputParts.Length > 7  && inputParts[7].StartsWith('"') && inputParts[7].EndsWith('"'))
+                                        {
+                                            switch (inputParts[6])
+                                            {
+                                                case "name":
+                                                    countdownName = inputParts[7].Trim('"');
+                                                    break;
+                                                case "file-path":
+                                                    filePath = inputParts[7].Trim('"');
+                                                    break;
+                                                default:
+                                                    Console.WriteLine("Invalid option. Use name or file-path");
+                                                    goto countdownBreakLabel;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Missing or empty value given after second option. Make sure to put \" \" around the value e.g. name \"enter name here\" Use 'help' command for more details.");
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No second option. Using default settings");
                                     }
                                 }
+                                else
+                                {
+                                    Console.WriteLine("No options provided. Using defaults settings");
+                                }
                                 Countdown.StartCountdown(selectedDateTime, countdownName, filePath);
+                                countdownBreakLabel:
                                 break;
                             case "bible-verses":
                                 string versesName = null;
                                 string versesFilePath = null;
                                 if (inputParts.Length > 2)
                                 {
-                                    switch (inputParts[2])
+                                    if (inputParts.Length > 3 && inputParts[3].StartsWith('"') && inputParts[3].EndsWith('"'))
                                     {
-                                        case "name":
-                                            versesName = inputParts[3].Trim('"');
-                                            break;
-                                        case "file-path":
-                                            versesFilePath = inputParts[3].Trim('"');
-                                            break;
-                                        default:
-                                            Console.WriteLine("No options provided. Using default settings");
-                                            break;
-                                    }
-                                    if (inputParts.Length > 4)
-                                    {
-                                        switch (inputParts[4])
+                                        switch (inputParts[2])
                                         {
                                             case "name":
-                                                versesName = inputParts[5].Trim('"');
+                                                versesName = inputParts[3].Trim('"');
                                                 break;
                                             case "file-path":
-                                                versesFilePath = inputParts[5].Trim('"');
+                                                versesFilePath = inputParts[3].Trim('"');
                                                 break;
                                             default:
-                                                Console.WriteLine("No second option. Using default settings");
-                                                break;
+                                                Console.WriteLine("Invalid option. Use name or file-path");
+                                                goto versesBreakLabel;
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine("No second option");
+                                        Console.WriteLine("Missing or empty value given after first option. Make sure to put \" \" around the value e.g. name \"enter name here\" Use 'help' command for more details.");
+                                        break;
+                                    }
+                                    if (inputParts.Length > 4)
+                                    {
+                                        if (inputParts.Length > 5 && inputParts[5].StartsWith('"') && inputParts[5].EndsWith('"'))
+                                        {
+                                            switch (inputParts[4])
+                                            {
+                                                case "name":
+                                                    versesName = inputParts[5].Trim('"');
+                                                    break;
+                                                case "file-path":
+                                                    versesFilePath = inputParts[5].Trim('"');
+                                                    break;
+                                                default:
+                                                    Console.WriteLine("Invalid option. Use name or file-path");
+                                                    goto versesBreakLabel;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Missing or empty value given after second option. Make sure to put \" \" around the value e.g. name \"enter name here\" Use 'help' command for more details.");
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No second option provided. Using default settings");
+
                                     }
                                 }
+                                else
+                                {
+                                    Console.WriteLine("No options provided. Using default settings");
+                                }
                                 BibleVersesWriter.StartBibleVerses(versesName, versesFilePath);
+                                versesBreakLabel:
                                 break;
                             case "countdown-verses":
+                                if (inputParts.Length > 3)
+                                {
+                                    string dateStr = inputParts[2];
+                                    string timeStr = inputParts[3];
+
+                                    if (!DateTime.TryParseExact(dateStr + " " + timeStr, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out selectedDateTime))
+                                    {
+                                        Console.WriteLine("Missing or invalid options. Please enter a date and time in the format yyyy:mm-dd hh:mm:ss");
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Missing or invalid options. Please enter a date and time in the format yyyy:mm-dd hh:mm:ss ");
+                                    break;
+                                }
                                 Countdown.StartCountdown(selectedDateTime);
                                 BibleVersesWriter.StartBibleVerses();
                                 break;
@@ -268,13 +328,13 @@ class Program
                     }
                     break;
                 case "stop":
-                    if (inputParts.Length > 1)
+                    if (inputParts.Length > 1 && inputParts[1].StartsWith('"') && inputParts[1].EndsWith('"'))
                     {
                         StopTask(inputParts[1].Trim('"'));
                     }
                     else
                     {
-                        Console.WriteLine($"No option provided. {useHelp}");
+                        Console.WriteLine($"Missing or invalid option. Make sure to place option in quotations \" \".");
                     }
                     break;
                 case "show":
@@ -331,6 +391,9 @@ class Program
                     {
                         Console.WriteLine($"No option provided. {useHelp}");
                     }
+                    break;
+                case "edit-bible-verses":
+                    BibleVersesWriter.EditBibleVersesVariables();
                     break;
                 case "exit":
                     return;
