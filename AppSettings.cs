@@ -2,7 +2,7 @@ class AppSettings
 {
     public string CountdownText { get; set; } = "Live in";
     public string CountdownOverText { get; set; } = "Starting soon!";
-    public string CountdownFormat {get; set;} = "hh:mm:ss";
+    public string CountdownFormat {get; set;} = "hh\\:mm\\:ss";
     public string FilePath { get; set; } = "./countdown.txt";
     public Boolean AutoStartCountdown {get; set;} = false;
     public DateTime AutoCountdownDateTime {get; set;}

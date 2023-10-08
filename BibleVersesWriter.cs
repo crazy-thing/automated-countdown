@@ -5,7 +5,6 @@ using System.Threading;
 
 class BibleVersesWriter
 {
-    public static Dictionary<string, string> nameToIds = new Dictionary<string, string>();
     public static string variablesPath = "verses-variables.txt";
     public static string templatePath ="verses-template.html";
 

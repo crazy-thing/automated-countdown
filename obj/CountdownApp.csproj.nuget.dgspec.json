@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj": {}
+    "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj": {
+    "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj",
+        "projectUniqueName": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj",
         "projectName": "CountdownApp",
-        "projectPath": "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj",
+        "projectPath": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj",
         "packagesPath": "C:\\Users\\crazy\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\obj\\",
+        "outputPath": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\crazy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\crazy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

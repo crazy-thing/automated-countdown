@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "70bEyToQ9juu8TMH0rhQI4ehRenThzlPaJPZq6e9aNMvYv7aIms1u+qm1Ybg0goeSsKCD1icmaSExvuengv36w==",
+  "dgSpecHash": "VuA1gUDFX/xpLJCV9fx+euxZ3uAIvpglnm6ROjnItMdHXcZ+RvhEejR0FKsbG6gOvsLiN6eI4AN6MhJ24fuOBw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\crazy\\Documents\\Countdown\\CountdownApp\\CountdownApp.csproj",
+  "projectFilePath": "C:\\Users\\crazy\\Documents\\Countdown\\countdownapp\\CountdownApp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
