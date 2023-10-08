@@ -16,7 +16,6 @@ class BibleVerses
         public int id { get; set; }
         public Genre genre { get; set; }
     }
-
     public class Genre
     {
         public string name { get; set; }
@@ -51,11 +50,9 @@ class BibleVerses
 
                 foreach (var book in filteredBooks)
                 {
-                    Console.WriteLine($"id {book.id} and genre {book.genre.name}");
                     bookIds.Add(book.id);
                 }
                 string randomBookNum = GetRandomNum(bookIds.First(), bookIds.Last() + 1);
-                Console.WriteLine(randomBookNum);
                 return randomBookNum;
             }
             else
@@ -93,14 +90,14 @@ class BibleVerses
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid genre. Please choose from {Util.allowedGenres}");
+                    Console.WriteLine($"Invalid genre. Please choose from (All, Law, History, Wisdom, Prophets,Gospels, Acts, Epistles, Apocalyptic).");
                 }
             }
-
 
             List<int> allVerses = new List<int>();
             string bookUrl = $"{baseApiUrl}/{bookNum}/chapters";
             int bookLen = 0;
+
             HttpResponseMessage bookResponse = await httpClient.GetAsync(bookUrl);
             if (bookResponse.IsSuccessStatusCode)
             {
@@ -116,6 +113,7 @@ class BibleVerses
             string chapNum = GetRandomNum(1, bookLen);
             string chapUrl = $"{bookUrl}/{chapNum}";
             int chapLen = 0;
+
             HttpResponseMessage chapResponse = await httpClient.GetAsync(chapUrl);
             if (chapResponse.IsSuccessStatusCode)
             {
@@ -127,7 +125,7 @@ class BibleVerses
                     int verse = element.GetProperty("id").GetInt32();
                     allVerses.Add(verse);
                 }
-                }
+            }
             else
             {
                 Console.WriteLine("Error: " + chapResponse.StatusCode);
@@ -137,9 +135,7 @@ class BibleVerses
             int first = allVerses[0];
             string verseId = GetRandomNum(first, last);
             fullUrl = $"{chapUrl}/{verseId}?translation={SettingsManager.GetBibleVersesTranslation()}";
-
             }
-        
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex.Message);
@@ -157,15 +153,12 @@ class BibleVerses
         try
         {
             await GetFullUrl();
-
             HttpResponseMessage bibleVerses = await httpClient.GetAsync(fullUrl);
             if (bibleVerses.IsSuccessStatusCode)
             {
                 string bibleVersesContent = await bibleVerses.Content.ReadAsStringAsync();
                 BibleVerseModel bibleVerseModel = JsonSerializer.Deserialize<BibleVerseModel>(bibleVersesContent);
                 return bibleVerseModel;
-                // set setting or variable for the current bible verse. then render that in a while loop similar to the countdown timer. add padding to get rid of old text
-
             }
             else
             {

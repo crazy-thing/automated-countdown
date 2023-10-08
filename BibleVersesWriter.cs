@@ -1,16 +1,16 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 class BibleVersesWriter
 {
     public static Dictionary<string, string> nameToIds = new Dictionary<string, string>();
     public static string variablesPath = "verses-variables.txt";
-
+    public static string templatePath ="verses-template.html";
 
     public static void StartBibleVerses(string bibleVersesName = null, string versesFilePath = null)
     {
-        
         if (string.IsNullOrWhiteSpace(bibleVersesName))
             {
                 bibleVersesName = $"verses{Program.nameToIds.Count + 1}";
@@ -26,18 +26,23 @@ class BibleVersesWriter
         Program.nameToIds.Add(bibleVersesName, bibleVersesId);
         CancellationTokenSource cts = new CancellationTokenSource();
         Task.Run(() => StartBibleVersesInternal(cts, bibleVersesName, versesFilePath));
+        TaskInfo taskInfo = new TaskInfo
+        {
+            TaskType = "Bible-Verses",
+            CancellationTokenSource = cts,
+        };
 
         lock (Program.lockObject)
         {
-            Program.tasks.Add(bibleVersesName, cts);
+            Program.tasks.Add(bibleVersesName, taskInfo);
         }
-
     }
 
     public static async Task StartBibleVersesInternal(CancellationTokenSource cts, string bibleVersesName, string filePath)
     {
+        Console.WriteLine("Started bible verses with name of: " + bibleVersesName);
+        CreateFromTemplate(filePath);
 
-        CreateDefaultTemplate(filePath);
 
         string template = File.ReadAllText(filePath);
         string prevBibleVerse = "{bibleVerse}";
@@ -49,16 +54,13 @@ class BibleVersesWriter
 
         BibleVerseModel bibleVerseModel = await BibleVerses.GetBibleVerse();
         string bibleVerseInfo = $"{bibleVerseModel.book.name} {bibleVerseModel.chapterId}:{bibleVerseModel.verseId}";
-
         template = template.Replace(prevBibleVerseInfo, bibleVerseInfo).Replace(prevBibleVerse, bibleVerseModel.verse);
-
         prevBibleVerseInfo = bibleVerseInfo;
         prevBibleVerse = bibleVerseModel.verse;
         File.WriteAllText(filePath, template);
 
         Thread.Sleep(interval);
         }
-
         if (cts.IsCancellationRequested)
         {
             Console.WriteLine($"Bible Verses Loop {bibleVersesName} finished!");
@@ -67,13 +69,42 @@ class BibleVersesWriter
         {
             Console.WriteLine($"Bible Verses Loop {bibleVersesName} canceled!");
         }
-
-
-
     }
 
-    public static void CreateDefaultTemplate(string filePath)
+    public static void CreateFromTemplate(string filePath)
     {
+
+        if (!File.Exists(templatePath))
+        {
+            CreateDefaultTemplate();
+        }
+
+        var template = File.ReadAllText(templatePath);
+
+        File.WriteAllText(filePath, template);
+    }
+
+    public static void EditBibleVersesVariables()
+    {
+
+        if (File.Exists(variablesPath))
+        {
+            Process.Start("notepad.exe", variablesPath);
+        }
+        else
+        {
+            CreateVariablesFile();
+        }
+    }
+
+
+    public static void CreateDefaultTemplate()
+    {
+        if (!File.Exists(variablesPath))
+        {
+            CreateVariablesFile();
+        }
+
         string defaultTemplate = @"
 <!DOCTYPE html>
 <html>
@@ -155,12 +186,12 @@ class BibleVersesWriter
         string variablePlaceholder = "{" + variable.Key + "}";
         defaultTemplate = defaultTemplate.Replace(variablePlaceholder, variable.Value);
     }
-    
-    File.WriteAllText(filePath, defaultTemplate);
+
+    File.WriteAllText(templatePath, defaultTemplate);
     }
 
-    public static void EditBibleVersesVariables()
-    {
+    public static void CreateVariablesFile()
+    {        
         string defaultVariables = 
 @"
 verseInfoFont=Arial
@@ -172,17 +203,6 @@ verseFontSize=60
 verseTextColor=#fff
 
 ";
-        if (File.Exists(variablesPath))
-        {
-            Process.Start("notepad.exe", variablesPath);
-        }
-        else
-        {
-            File.WriteAllText(variablesPath, defaultVariables);
-            Process.Start("notepad.exe", variablesPath);
-        }
-
-
+        File.WriteAllText(variablesPath, defaultVariables);
     }
-
 }

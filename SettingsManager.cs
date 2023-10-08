@@ -14,7 +14,7 @@ class SettingsManager
     public static string autoCountdownTime;
     public static Boolean autoStartBibleVersesLoop;
     public static int bibleVersesLoopInterval;
-    public static string bibleVersesFilePath;
+    public static string bibleVersesFilePath; 
     public static string bibleVersesTranslation;
     public static string bibleVersesGenre;
 
@@ -58,7 +58,6 @@ class SettingsManager
             Console.WriteLine("File not found");
         }
     }
-
     public static void SaveSettings()
     {
         var settings = new AppSettings
@@ -84,7 +83,6 @@ class SettingsManager
         Console.WriteLine("Settings saved");
         LoadSettings();
     }
-
     public static AppSettings GetCountdownSettings()
     {
         return new AppSettings{
@@ -104,17 +102,14 @@ class SettingsManager
         };
 
     }
-
     public static string GetCountdownText()
     {
         return countdownText;
     }
-
     public static string GetCountdownOverText()
     {
         return countdownOverText;
     }
-
     public static string GetCountdownFormat()
     {
         return countdownFormat;
@@ -122,30 +117,6 @@ class SettingsManager
     public static string GetFilePath()
     {
         return filePath;
-    }
-
-    public static Boolean GetAutoStartCountdown()
-    {
-        return autoStartCountdown;
-    }
-
-    public static DateTime GetAutoCountdownDateTime()
-    {
-        return autoCountdownDateTime;
-    }
-
-    public static DayOfWeek GetAutoCountdownDay()
-    {
-        return autoCountdownDay;
-    }
-
-    public static string GetAutoCountdownTime()
-    {
-        return autoCountdownTime;
-    }
-    public static Boolean GetAutoStartBibleVersesLoop()
-    {
-        return autoStartBibleVersesLoop;
     }
     public static int GetBibleVersesLoopInterval()
     {
@@ -167,12 +138,10 @@ class SettingsManager
     {
         countdownText = newText;
     }
-
     public static void SetCountdownOverText(string newText)
     {
         countdownOverText = newText;
     }
-
     public static void SetCountdownFormat(string newFormat)
     {
         countdownFormat = newFormat;
@@ -181,20 +150,17 @@ class SettingsManager
     {
         filePath = newFilePath;
     }
-
     public static void SetAutoStartCountdown(Boolean newValue)
     {
         autoStartCountdown = newValue;
         SaveSettings();
     }
-
     public static void SetAutoCountdownDateTime(DateTime newAutoCountdownDateTime)
     {
         autoCountdownDateTime = newAutoCountdownDateTime;
 
         SaveSettings();
     }
-
     public static void SetAutoCountdownDay(DayOfWeek newAutoCountdownDay)
     {
         autoCountdownDay = newAutoCountdownDay;
@@ -225,3 +191,35 @@ class SettingsManager
         bibleVersesGenre = newGenre;
     }
 }
+
+
+
+/*
+     Unused Code
+
+    public static Boolean GetAutoStartCountdown()
+    {
+        return autoStartCountdown;
+    }
+
+    public static DateTime GetAutoCountdownDateTime()
+    {
+        return autoCountdownDateTime;
+    }
+
+    public static DayOfWeek GetAutoCountdownDay()
+    {
+        return autoCountdownDay;
+    }
+
+    public static string GetAutoCountdownTime()
+    {
+        return autoCountdownTime;
+    }
+    public static Boolean GetAutoStartBibleVersesLoop()
+    {
+        return autoStartBibleVersesLoop;
+    }
+
+
+*/

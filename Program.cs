@@ -2,32 +2,27 @@ using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-// ######### TO DO ############
 /*
+    ######### Possible future To-Do #########
+
     Make new command handling method to improve readability and efficiency
-    Add option to link countdown timer and bible verses interval
-    Option to display days until countdowns
-    Make auto start daily work instead of just days
     Organize settings
 */
-/* 
-
-*/
-
 
 class Program
 {   
-    public static Dictionary<string, CancellationTokenSource> tasks = new Dictionary<string, CancellationTokenSource>();
+    public static Dictionary<string, TaskInfo> tasks = new Dictionary<string, TaskInfo>();
     public static Dictionary<string, string> nameToIds = new Dictionary<string, string>();
     public static string helpCmdInfo = @"
     Start command used to start a specific task. Countdown option requires a date and time
     start 
         countdown (yyyy-mm-dd) (hh:mm:ss) **OPTIONAL** name (""enter-name-here"") file-path (""C:\Enter\File\path\here.txt"")
         bible-verses  **OPTIONAL** name (""enter-name-here"") file-path (""C:\Enter\File\path\here.txt"")
-        countdown-verses
+        countdown-verses (yyyy-mm-dd) (hh:mm:ss)
 
     Stop command used to stop a specific task. Requires the name of the task to stop
     stop (""task-name"")
+          (""all"")
 
     Show command used to show all running tasks. If no tasks are running there will be no output.
     show
@@ -42,14 +37,17 @@ class Program
 
         Sets the format for the time to be displayed in hh:mm:ss mm:ss
         countdown-format (enter format here) 
-            *Allowed Formats: 
-                hh:mm:ss,
-                hh:mm, 
-                hh:ss, 
-                hh,
-                mm:ss,
-                mm,
-                ss* 
+            dd:hh:mm:ss
+            dd:hh:mm
+            dd:hh
+            dd
+            hh:mm:ss
+            hh:mm
+            hh:ss
+            hh
+            mm:ss
+            mm
+            ss
 
         Sets the file path for where to write the countdown time to
         file-path (C:\Enter\File Path\here\file.txt)
@@ -65,16 +63,15 @@ class Program
 
         Sets the translation for the bible verses
         bible-verses-translation
-            Available Options:
-                ASV
-                BBE
-                DARBY
-                KJV
-                WEB
-                YLT
-                ESV
-                NIV
-                NLT
+            ASV
+            BBE
+            DARBY
+            KJV
+            WEB
+            YLT
+            ESV
+            NIV
+            NLT
 
         Sets the genre to get bible verses from
         bible-verses-genre
@@ -97,7 +94,8 @@ class Program
     disable-auto-start
         countdown
         bible-verses
-    Edit-bible-verses command used to open a txt file to configure settings for the bible verses display. Changes can be made to the font, font-size, and color
+    Edit-bible-verses command used to open a txt file to configure settings for the bible verses display. Changes can be made to the font, font-size, and color.
+    More changes can be made directly by going to the verses-template.html file.
     edit-bible-verses
 
     Exit command used to close close program
@@ -105,7 +103,6 @@ class Program
 
     ";
     public static string useHelp = "Use ('help') to see all commands";
-
     public static object lockObject = new object();
     static void Main(string[] args)
     {
@@ -134,10 +131,10 @@ class Program
             Console.WriteLine("Auto Start Bible verses is disabled");
         }
 
-
+        Console.WriteLine($"Enter a command. {useHelp} ");
         while (true)
         {
-            Console.WriteLine($"Enter a command. {useHelp} ");
+            Console.Write("> ");
             string userInput = Console.ReadLine();
 
             string[] inputParts = Regex.Matches(userInput, @"[\""].+?[\""]|[^ ]+")
@@ -148,7 +145,6 @@ class Program
             string command = inputParts[0].ToLower();
 
             DateTime selectedDateTime = DateTime.Now;
-
 
             switch (command)
             {
@@ -186,7 +182,14 @@ class Program
                                         switch (inputParts[4])
                                         {
                                             case "name":
-                                                countdownName = inputParts[5].Trim('"');
+                                                    if(tasks.ContainsKey(inputParts[5].Trim('"')))
+                                                    {
+                                                        Console.WriteLine("Named already in use!. Getting default names");
+                                                    }
+                                                    else
+                                                    {
+                                                        countdownName = inputParts[5].Trim('"');
+                                                    }
                                                 break;
                                             case "file-path":
                                                 filePath = inputParts[5].Trim('"');
@@ -208,8 +211,15 @@ class Program
                                             switch (inputParts[6])
                                             {
                                                 case "name":
-                                                    countdownName = inputParts[7].Trim('"');
-                                                    break;
+                                                   if(tasks.ContainsKey(inputParts[7].Trim('"')))
+                                                    {
+                                                        Console.WriteLine("Named already in use!. Getting default names");
+                                                    }
+                                                    else
+                                                    {
+                                                        countdownName = inputParts[7].Trim('"');
+                                                    }                                                 
+                                                break;
                                                 case "file-path":
                                                     filePath = inputParts[7].Trim('"');
                                                     break;
@@ -246,7 +256,14 @@ class Program
                                         switch (inputParts[2])
                                         {
                                             case "name":
-                                                versesName = inputParts[3].Trim('"');
+                                                if(tasks.ContainsKey(inputParts[3].Trim('"')))
+                                                {
+                                                    Console.WriteLine("Named already in use!. Getting default names");
+                                                }
+                                                else
+                                                {
+                                                    versesName = inputParts[3].Trim('"');
+                                                }                                                
                                                 break;
                                             case "file-path":
                                                 versesFilePath = inputParts[3].Trim('"');
@@ -268,7 +285,14 @@ class Program
                                             switch (inputParts[4])
                                             {
                                                 case "name":
-                                                    versesName = inputParts[5].Trim('"');
+                                                   if(tasks.ContainsKey(inputParts[5].Trim('"')))
+                                                    {
+                                                        Console.WriteLine("Named already in use! Getting default names");
+                                                    }
+                                                    else
+                                                    {
+                                                        versesName = inputParts[5].Trim('"');
+                                                    }
                                                     break;
                                                 case "file-path":
                                                     versesFilePath = inputParts[5].Trim('"');
@@ -330,7 +354,7 @@ class Program
                 case "stop":
                     if (inputParts.Length > 1 && inputParts[1].StartsWith('"') && inputParts[1].EndsWith('"'))
                     {
-                        StopTask(inputParts[1].Trim('"'));
+                        Util.StopTask(inputParts[1].Trim('"'));
                     }
                     else
                     {
@@ -338,7 +362,7 @@ class Program
                     }
                     break;
                 case "show":
-                    ShowAllTasks();
+                    Util.ShowAllTasks();
                     break;
                 case "set":
                     if (inputParts.Length > 1)
@@ -405,33 +429,6 @@ class Program
 
         }
     }
-    public static void ShowAllTasks()
-    {
-        lock (lockObject)
-        {
-            foreach (var kvp in Program.tasks)
-            {
-                Console.WriteLine($"Task {kvp.Key}: {(kvp.Value.IsCancellationRequested ? "Canceled" : "Running")} ");
-            }
-        }
-    }
 
-    public static void StopTask(string taskName)
-    {
-        lock (lockObject)
-        {
-            if (tasks.TryGetValue(taskName, out CancellationTokenSource cts))
-            {
-                cts.Cancel();
-                tasks.Remove(taskName);
-                nameToIds.Remove(taskName);
-                Console.WriteLine($"Task {taskName} stopped.");
-            }
-            else
-            {
-                Console.WriteLine($"Task {taskName} not found.");
-            }            
-        }
-    }
 
 }

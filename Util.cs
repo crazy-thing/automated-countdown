@@ -1,14 +1,13 @@
 class Util
 {   
-    private static string[] autoStartOptsDays = {"daily", "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
-    private static string[] allowedFormats = {"hh:mm:ss", "hh:mm", "hh:ss", "hh","mm:ss","mm","ss"};
+    private static string[] allowedAutoStartOpts = {"daily", "monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
+    private static string[] allowedFormats = {"dd:hh:mm:ss", "dd:hh:mm", "dd:hh", "dd", "hh:mm:ss", "hh:mm", "hh:ss", "hh","mm:ss","mm","ss"};
     private static string[] allowedTranslations = {"ASV", "BBE", "DARBY", "KJV", "WEB", "YLT", "ESV", "NIV", "NLT"};
     public static string[] allowedGenres = {"All", "Law", "History", "Wisdom", "Prophets","Gospels", "Acts", "Epistles", "Apocalyptic"};
         public static void SetSettings(string[] inputParts)
     {
         try
-        {
-            
+        { 
             string setting = inputParts[1];
             string newSetting = string.Join(" ", inputParts.Skip(2));
 
@@ -18,14 +17,11 @@ class Util
                 {
                     case "countdown-text":
                         SettingsManager.SetCountdownText(newSetting);
-                        Console.WriteLine("set the countdown text message: " + SettingsManager.GetCountdownText());
                         break;
                     case "countdown-over-text":
                         SettingsManager.SetCountdownOverText(newSetting);
-                        Console.WriteLine("set the text for when the countdown is over: " + SettingsManager.GetCountdownOverText());
                         break;
                     case "countdown-format":
-
                         if (allowedFormats.Contains(newSetting))
                         {
                             string newFormat = newSetting.Replace(":", "\\:");
@@ -33,19 +29,18 @@ class Util
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid format. Please enter a valid display format. {allowedFormats}");
+                            Console.WriteLine("Invalid format. Please enter a valid display format. (hh:mm:ss, hh:mm, hh:ss, hh,mm:ss,mm,ss).");
                         }
                         break;
                     case "file-path":
                         SettingsManager.SetFilePath(newSetting);
-                        Console.WriteLine("set the filepath: " + SettingsManager.GetFilePath());
                         break;
                     case "auto-start-time":
                     if (inputParts.Length > 3)
                     {
                         string dayOpt = inputParts[2];
                         string targetTime = inputParts[3];
-                        int index = Array.IndexOf(autoStartOptsDays, dayOpt);
+                        int index = Array.IndexOf(allowedAutoStartOpts, dayOpt);
                         DayOfWeek targetDayOfWeek = DateTime.Now.DayOfWeek;
                         if (index != -1)
                         {
@@ -130,36 +125,64 @@ class Util
     }
 
     public static DateTime CalculateAutoStartDateTime(DayOfWeek targetDayOfWeek, string targetTime)
-{
-    DateTime dateTime = CalculateNextDayOfWeek(targetDayOfWeek);
-    string dateStr = dateTime.ToString("yyyy-MM-dd");
+    {
+        DateTime dateTime = CalculateNextDayOfWeek(targetDayOfWeek);
+        string dateStr = dateTime.ToString("yyyy-MM-dd");
 
-    Console.WriteLine("Date: " + dateStr + "time: " + targetTime);
-    if (!DateTime.TryParseExact(dateStr + " " + targetTime, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime selectedAutoStartDateTime))
-        {
-            Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
-            return selectedAutoStartDateTime;
-        }
-    SettingsManager.SetAutoCountdownDateTime(selectedAutoStartDateTime);
-    return selectedAutoStartDateTime;
-}
+        Console.WriteLine("Date: " + dateStr + "time: " + targetTime);
+        if (!DateTime.TryParseExact(dateStr + " " + targetTime, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime selectedAutoStartDateTime))
+            {
+                Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
+                return selectedAutoStartDateTime;
+            }
+        SettingsManager.SetAutoCountdownDateTime(selectedAutoStartDateTime);
+        return selectedAutoStartDateTime;
+    }
 
     public static DateTime CalculateNextDayOfWeek(DayOfWeek targetDayOfWeek)
     {
-            DateTime currentDate = DateTime.Now;
-            int daysUntilTargetDay = ((int)targetDayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;
-            DateTime nextDay = currentDate.Date.AddDays(daysUntilTargetDay);
-            return nextDay;
+        DateTime currentDate = DateTime.Now;
+        int daysUntilTargetDay = ((int)targetDayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;
+        DateTime nextDay = currentDate.Date.AddDays(daysUntilTargetDay);
+        return nextDay;
     }
+    public static void ShowAllTasks()
+    {
+        lock (Program.lockObject)
+        {
+            foreach (var kvp in Program.tasks)
+            {
+                Console.WriteLine($"Task: \"{kvp.Key}\"   Type: {kvp.Value.TaskType}   Status: {(kvp.Value.CancellationTokenSource.IsCancellationRequested ? "Canceled" : "Running")}  ");
+            }
+        }
+    }
+    public static void StopTask(string taskName)
+    {
+        lock (Program.lockObject)
+        {
+            if (taskName.Equals("all"))
+            {
+                foreach (var task in Program.tasks)
+                {
+                    task.Value.CancellationTokenSource.Cancel();
+                }
+                Program.tasks.Clear();
+                Program.nameToIds.Clear();
+                Console.WriteLine("Stopped all tasks");
+                return;
+            }
 
+            if (Program.tasks.TryGetValue(taskName, out TaskInfo taskInfo))
+            {
+                taskInfo.CancellationTokenSource.Cancel();
+                Program.tasks.Remove(taskName);
+                Program.nameToIds.Remove(taskName);
+                Console.WriteLine($"Task {taskName} stopped.");
+            }
+            else
+            {
+                Console.WriteLine($"Task {taskName} not found.");
+            }            
+        }
+    }
 }
-
-// extra 
-/*                 case "bible-verses-file-path":
-                    SettingsManager.SetBibleVersesFilePath(newSetting);
-                    break;
-                case "bible-verses-info-file-path":
-                    SettingsManager.SetBibleVersesInfoFilePath(newSetting);
-                    break; 
-                    
-                    */

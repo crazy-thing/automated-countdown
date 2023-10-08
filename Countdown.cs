@@ -10,7 +10,6 @@ class Countdown
     private static string paddedCountdownOverText;
     public static void StartCountdown(DateTime selectedDateTime, string countdownName = null, string filePath = null)
     { 
-
             Console.WriteLine("Started with time of: " + selectedDateTime);
             
             if (string.IsNullOrWhiteSpace(countdownName))
@@ -28,10 +27,14 @@ class Countdown
     
             CancellationTokenSource cts = new CancellationTokenSource();
             Task.Run(() => StartCountdownInternal(selectedDateTime, cts.Token, countdownName, filePath));
-
+            TaskInfo taskInfo = new TaskInfo
+            {
+                TaskType = "Countdown",
+                CancellationTokenSource = cts,
+            };
             lock (Program.lockObject)
             {
-                Program.tasks.Add(countdownName, cts);
+                Program.tasks.Add(countdownName, taskInfo);
             }
 
             Console.WriteLine($"Countdown started with name: {countdownName}");
@@ -39,7 +42,6 @@ class Countdown
 
     public static void StartCountdownInternal(DateTime targetDateTime, CancellationToken cancellationToken, string countdownName, string filePath)
     {
-
         StreamWriter writer = new StreamWriter(filePath);
 
         string prevCountdownText = string.Empty;
@@ -48,10 +50,10 @@ class Countdown
         while (!cancellationToken.IsCancellationRequested && DateTime.Now < targetDateTime)
         {
             TimeSpan timeRemaining = targetDateTime - DateTime.Now;
-            string formattedTime = timeRemaining.ToString(SettingsManager.GetCountdownFormat()); 
+            string format = SettingsManager.GetCountdownFormat();
+            string formattedTime = timeRemaining.ToString(format); 
             string paddedCountdownText = $"{SettingsManager.GetCountdownText()}: {formattedTime}".PadRight(prevCountdownText.Length);
             paddedCountdownOverText = $"{SettingsManager.GetCountdownOverText()}".PadRight(prevCountDownOverText.Length);
-
 
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
             writer.Write(paddedCountdownText);
@@ -69,7 +71,7 @@ class Countdown
             writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
             Console.WriteLine($"Countdown {countdownName} finished!");
-            Program.StopTask(countdownName);
+            Util.StopTask(countdownName);
             writer.Dispose();
         }
         else
@@ -81,9 +83,6 @@ class Countdown
             writer.Dispose();
         }
     }
-
-
-
 
 
 }
