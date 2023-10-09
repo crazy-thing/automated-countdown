@@ -70,7 +70,6 @@ class Countdown
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
             writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
-            Console.WriteLine($"Countdown {countdownName} finished!");
             Util.StopTask(countdownName);
             writer.Dispose();
         }
@@ -79,7 +78,6 @@ class Countdown
             writer.BaseStream.Seek(0, SeekOrigin.Begin);
             writer.Write($"\r{paddedCountdownOverText}");
             writer.Flush();
-            Console.WriteLine($"Countdown {countdownName} canceled");
             writer.Dispose();
         }
     }

@@ -134,6 +134,7 @@ class Program
         Console.WriteLine($"Enter a command. {useHelp} ");
         while (true)
         {
+            restartLabel:
             Console.Write("> ");
             string userInput = Console.ReadLine();
 
@@ -142,7 +143,15 @@ class Program
                             .Select(m => m.Value)
                             .ToArray();;
 
-            string command = inputParts[0].ToLower();
+            string command = string.Empty;
+            if (inputParts.Length > 0)
+            {
+                command = inputParts[0].ToLower();
+            }
+            else
+            {
+                goto restartLabel;
+            }
 
             DateTime selectedDateTime = DateTime.Now;
 
@@ -425,8 +434,6 @@ class Program
                     Console.WriteLine($"Invalid command. {useHelp}");
                     break;
             }
-
-
         }
     }
 

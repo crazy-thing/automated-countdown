@@ -1,0 +1,14 @@
+C:\Users\crazy\Documents\Countdown\countdownapp\bin\Debug\net7.0\CountdownApp.exe
+C:\Users\crazy\Documents\Countdown\countdownapp\bin\Debug\net7.0\CountdownApp.deps.json
+C:\Users\crazy\Documents\Countdown\countdownapp\bin\Debug\net7.0\CountdownApp.runtimeconfig.json
+C:\Users\crazy\Documents\Countdown\countdownapp\bin\Debug\net7.0\CountdownApp.dll
+C:\Users\crazy\Documents\Countdown\countdownapp\bin\Debug\net7.0\CountdownApp.pdb
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.AssemblyInfoInputs.cache
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.AssemblyInfo.cs
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.csproj.CoreCompileInputs.cache
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.dll
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\refint\CountdownApp.dll
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.pdb
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\CountdownApp.genruntimeconfig.cache
+C:\Users\crazy\Documents\Countdown\countdownapp\obj\Debug\net7.0\ref\CountdownApp.dll

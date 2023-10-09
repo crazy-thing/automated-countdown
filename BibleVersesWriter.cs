@@ -60,14 +60,6 @@ class BibleVersesWriter
 
         Thread.Sleep(interval);
         }
-        if (cts.IsCancellationRequested)
-        {
-            Console.WriteLine($"Bible Verses Loop {bibleVersesName} finished!");
-        }
-        else
-        {
-            Console.WriteLine($"Bible Verses Loop {bibleVersesName} canceled!");
-        }
     }
 
     public static void CreateFromTemplate(string filePath)
