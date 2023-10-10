@@ -15,6 +15,7 @@ This program utilizes Rob Keplin's <a href="https://www.rkeplin.com/the-holy-bib
 - Command parser
 - Refactor code for efficiency and readability
 - Add a GUI
+- Better error handling
 
 # Documentation 
 
