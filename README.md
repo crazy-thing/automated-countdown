@@ -11,6 +11,11 @@ This program utilizes Rob Keplin's <a href="https://www.rkeplin.com/the-holy-bib
 - Automation and scheduling
 - Lots of configurable settings
 
+# Future Improvements
+- Command parser
+- Refactor code for efficiency and readability
+- Add a GUI
+
 # Documentation 
 
 
