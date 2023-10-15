@@ -5,6 +5,7 @@ This program was created for a church as a simple way to display a countdown tim
 
 This program utilizes Rob Keplin's <a href="https://www.rkeplin.com/the-holy-bible-open-source-rest-api/">"The Holy Bible – Open Source REST API" </a> for getting bible verses.
 
+.NET 7.0 Runtime needs to be installed
 # Features
 
 - Create and manage countdown timers and live bible verses
