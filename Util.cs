@@ -129,7 +129,7 @@ class Util
         DateTime dateTime = CalculateNextDayOfWeek(targetDayOfWeek);
         string dateStr = dateTime.ToString("yyyy-MM-dd");
 
-        Console.WriteLine("Date: " + dateStr + "time: " + targetTime);
+        Console.WriteLine("Date: " + dateStr + " Time: " + targetTime);
         if (!DateTime.TryParseExact(dateStr + " " + targetTime, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime selectedAutoStartDateTime))
             {
                 Console.WriteLine("Error: Invalid date and time format. Please use the format yyyy:MM-dd HH:mm:ss ");
